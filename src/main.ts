@@ -29,8 +29,11 @@ const router = createRouter({
     },
   ],
 })
+// @ts-ignore
+// import VueTwca from 'vue-twcaseal'
 
 const app = createApp(Root)
 
+// app.use(VueTwca, 'test.com')
 app.use(router)
 app.mount('#app')

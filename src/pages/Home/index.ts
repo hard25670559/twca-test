@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from 'vue';
+
 import Page from './App.vue';
 
 // declare global {
@@ -16,4 +18,35 @@ import Page from './App.vue';
 
 // document.body.append(script);
 
-export default Page;
+
+export default defineAsyncComponent(async () => {
+  await initData();
+  return Page;
+});
+
+
+declare type ShowPostMessageData = 'be463f48-01fa-49a1-bcd5-545795acab2b';
+
+// for test
+// window.postMessage('be463f48-01fa-49a1-bcd5-545795acab2b', '*');
+/**
+ * 等待電商將初始化資料傳過來
+ */
+async function initData() {
+  await new Promise<void>((resolve) => {
+    const handleInit = (e: MessageEvent<ShowPostMessageData>) => {
+      console.log('main page~', e.data);
+
+      if (e.data !== 'be463f48-01fa-49a1-bcd5-545795acab2b') {
+        return ;
+      }
+
+      resolve();
+
+      console.log('post message', e.data);
+      // 初始化完成，即可移除監聽
+      window.removeEventListener('message', handleInit);
+    }
+    window.addEventListener('message', handleInit);
+  });
+}
